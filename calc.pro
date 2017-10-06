@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui charts
 CONFIG += c++14
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -29,26 +29,36 @@ SOURCES += \
     about.cpp \
     calc_interface.cpp \
     polynomial.cpp \
-    token.cpp
+    token.cpp \
+    draw_figure_window.cpp
 
 HEADERS += \
         mainwindow.h \
     about.h \
     calc_interface.h \
     polynomial.h \
-    token.h
+    token.h \
+    draw_figure_window.h
 
 FORMS += \
         mainwindow.ui \
-    about.ui
+    about.ui \
+    draw_figure_window.ui
+
 
 !macx {
 LIBS += -lfl -ly
+DISTFILES += \
+    calc.ico
+
+RC_ICONS = calc.ico
 }
 
 macx: {
 LIBS += -ll -ly
+ICON = calc.icns
 }
+
 FLEXSOURCES = scanner.l
 BISONSOURCES = parser.y
 OTHER_FILES +=  \
@@ -90,3 +100,4 @@ bisonheader.name = Bison Headers ${QMAKE_FILE_IN}
 bisonheader.CONFIG += target_predeps no_link
 
 QMAKE_EXTRA_COMPILERS += bisonheader
+

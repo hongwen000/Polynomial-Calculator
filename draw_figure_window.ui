@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>draw_figure_window</class>
+ <widget class="QMainWindow" name="draw_figure_window">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>21</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>x最小值</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_xmin">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>21</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>21</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>x最大值</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit_xmax">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>21</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>确认</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="text">
+         <string>关闭</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>lineEdit_xmin</sender>
+   <signal>returnPressed()</signal>
+   <receiver>pushButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>196</x>
+     <y>297</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>683</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit_xmax</sender>
+   <signal>returnPressed()</signal>
+   <receiver>pushButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>518</x>
+     <y>297</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>683</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>draw_figure_window</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>753</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

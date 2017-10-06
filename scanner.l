@@ -1,5 +1,6 @@
 %{
     #include "token.h"
+    #include "calc_interface.h"
     int pos = 1;
 
     extern "C" {
@@ -27,8 +28,8 @@
 "\n" {pos = 1; continue;}
 print {next(); return PRINT;}
 "print all" {next(); return PRINT_ALL;}
-[[:digit:]]+ {next(); yylval = yytext; return NUM;}
-[a-zA-Z\_][a-zA-Z\_0-9]* {next(); yylval = yytext; return ID;}
+-?(([0-9]+)|([0-9]*\.[0-9]+)([eE][-+]?[0-9]+)?) {next(); yylval.getNum() = yytext; return NUM;}
+[a-zA-Z\_][a-zA-Z\_0-9]* {next(); yylval.getID() = yytext; return ID;}
 "+" {next(); return ADD;}
 "-" {next(); return SUB;}
 "*" {next(); return MUL;}
@@ -38,6 +39,8 @@ print {next(); return PRINT;}
 "^" {next(); return EXP;}
 "=" {next(); return ASSIGN;}
 "==" {next(); return EQUAL;}
-. {pos = 1; return ERROR;}
+"/" {next(); return DIV;}
+"%" {next(); return MOD;}
+. {calc_interface::scanner_error.illegal_token = true; calc_interface::scanner_error.illegal_token_pos = pos; pos = 1; return ERROR;}
 %%
 

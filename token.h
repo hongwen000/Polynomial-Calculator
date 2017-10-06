@@ -4,11 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cstring>
+#include "polynomial.h"
 
 
-#define YYSTYPE std::string
+#define YYSTYPE Polynomial
 #include "parser.h"
-char* itoa(int value, char* result, int base);
 
 #ifndef VAR
 typedef enum {
@@ -50,7 +50,7 @@ static const char* token_strs[] = {
     "EQUAL"
 };
 
-#define YYSTYPE std::string
+#define YYSTYPE Polynomial
 
 typedef struct
 {
@@ -66,8 +66,6 @@ extern "C" {
 }
 
 
-TOKEN getToken ();
-void printToken(TOKEN token);
 void scan(std::string str);
 
 #endif /* ifndef H_TOKEN_H */

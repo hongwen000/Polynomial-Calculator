@@ -2,21 +2,14 @@
 #include "token.h"
 #include <iostream>
 #include <iomanip>
-#define DEBUG
-#ifdef DEBUG
-# define DEBUG_PRINT(x) std::cout << std::endl << x << std::endl;
-#else
-# define DEBUG_PRINT(x) do {} while (0)
-#endif
+#include "polynomial.h"
+#include "calc_interface.h"
+#include <string>
 extern "C" {
     void yyerror (char const *s) {
-      fprintf (stderr, "%s\n", s);
+        calc_interface::parser_error.synax_error = true;
     }
     extern int yylex(void);
-}
-void yyerror (const std::string &s)
-{
-    yyerror(s.c_str());
 }
 %}
 
@@ -36,40 +29,45 @@ void yyerror (const std::string &s)
 %token EXP 
 %token ASSIGN 
 %token EQUAL
+%token DIV
+%token MOD
 
 %right ASSIGN
 %left ADD SUB
-%left MUL 
+%left MUL DIV MOD
 %left DERIVE
 %right NEG
 %right EXP
 
 
 %%
-S   :   E           { std::cout << "00000 "     << "ANS"  << " " << $1 << std::endl;}
-    |   ID ASSIGN E { std::cout << "00000 "     << $1     << " " << $3 << std::endl;}
-    |   ID EQUAL ID { std::cout << "00001 "     << $1     << " " << $3 << std::endl;}
-    |   PRINT ID    { std::cout << "00010 "     << $2     << " " << std::endl;}
-    |   PRINT_ALL   { std::cout << "00010 "     << "ALL"  << std::endl;}
+S   :   E           {calc_interface::statement_type = ASSIGN_STM; calc_interface::assign_stm_info.variable_name = "ANS"; calc_interface::assign_stm_info.parsed_input = $$;}
+    |   ID ASSIGN E {calc_interface::statement_type = ASSIGN_STM; calc_interface::assign_stm_info.variable_name = $1.getID();  calc_interface::assign_stm_info.parsed_input = $3;}
+    |   ID EQUAL ID {calc_interface::statement_type = TEST_EQUAL_STM; calc_interface::test_equal_stm_info.var1 = $1; calc_interface::test_equal_stm_info.var2 = $3;}
+    |   PRINT ID    {calc_interface::statement_type = PRINT_STM; calc_interface::print_stm_info.var = $2;}
+    |   PRINT_ALL   {calc_interface::statement_type = PRINT_STM; calc_interface::print_stm_info.var.getID() = "ALL";}
     ;
-E   :   T                             { DEBUG_PRINT("GRAMMER1") $$ = $1;}
-    |   ID                            { DEBUG_PRINT("GRAMMER2") $$ = $1;}
-    |   E ADD E                       { DEBUG_PRINT("GRAMMER3") $$ = $1 + " " + $3 + " " + std::string("+");}
-    |   E SUB E                       { DEBUG_PRINT("GRAMMER4") $$ = $1 + " " + $3 + " " + std::string("-");}
-    |   E MUL E                       { DEBUG_PRINT("GRAMMER5") $$ = $1 + " " + $3 + " " + std::string("*");}
-    |   E DERIVE                      { DEBUG_PRINT("GRAMMER6") $$ = $1 + " " + std::string("'");}
-    |   SUB LPAREN E RPAREN %prec EXP { DEBUG_PRINT("GRAMMER7") $$ = $3 + " " + std::string("~");}
-    |       LPAREN E RPAREN           { DEBUG_PRINT("GRAMMER8") $$ = $2;}
+E   :   T								{$$ = $1;}
+    |   ID								{$$ = calc_interface::getVariable($1.getID());}
+    |   E ADD E							{$$ = $1 + $3;}
+    |   E SUB E							{$$ = $1 - $3;}
+    |   E MUL E							{$$ = $1 * $3;}
+    |	E DIV E							{$$ = $1 / $3;}
+    |   E DERIVE						{$$ = $1.derivative();}
+    |   LPAREN E RPAREN					{$$ = $2;}
+    |	LPAREN E RPAREN EXP N			{$$ = $2.poly_power($5.get(0));}
+    |	SUB E				%prec NEG	{$$ = -$2;}
+    |	ADD E				%prec NEG	{$$ = $2;}
     ;
-T   :   N                             { DEBUG_PRINT("GRAMMER9") $$ = $1 + " " + "0";}
-    |       VAR                       { DEBUG_PRINT("GRAMMERA") $$ = std::string("1") + " " + "1";}
-    |   N   VAR                       { DEBUG_PRINT("GRAMMERB") $$ = $1               + " " + "0";}
-    |       VAR EXP N       %prec EXP { DEBUG_PRINT("GRAMMERa") $$ = std::string("1") + " " + $3;}
-    |   N   VAR EXP N       %prec EXP { DEBUG_PRINT("GRAMMERC") $$ = $1               + " " + $4;}
-    |   N       EXP N       %prec EXP { DEBUG_PRINT("GRAMMERD") $$ = $1 + " " + $3 + " " + std::string("^");}
+T   :   N							  	{$$ = $1;}
+    |       VAR							{$$ = Polynomial(1, 1);}
+    |   N   VAR							{$$ = Polynomial($1.get(0), 1);}
+    |       VAR EXP N       %prec EXP	{$$ = Polynomial(1, $3.get(0));}
+    |   N   VAR EXP N       %prec EXP	{$$ = Polynomial($1.get(0), $4.get(0));}
+    |   N       EXP N       %prec EXP	{$$ = Polynomial(std::pow($1.get(0), $3.get(0)), 0);}
     ;
-N   :       NUM                       {DEBUG_PRINT("GRAMEMRE") $$ = $1;}
-    |   SUB NUM             %prec NEG {DEBUG_PRINT("GRAMEMRF") $$ = "-" + $2;}
+N   :       NUM						  	{Polynomial::coef_type coef = std::stod($1.getNum()); $$ = Polynomial(coef, 0);}
+    |	NUM MOD	NUM 					{Polynomial::coef_type coef = std::stol($1.getNum()) % std::stol($3.getNum()); $$ = Polynomial(coef, 0);}
     ;
 %%
 

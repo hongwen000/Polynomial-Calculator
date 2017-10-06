@@ -1,25 +1,4 @@
 #include "token.h"
-TOKEN getToken ()
-{
-        int type = yylex();
-        YYSTYPE val = yylval;
-        TOKEN newToken;
-        newToken.type = type;
-        newToken.lval = val;
-        return newToken;
-}
-void printToken(TOKEN token)
-{
-    int token_type = token.type;
-    if(token_type == ID)
-        printf("ID<%s> ", token.lval.c_str());
-    else if (token_type == NUM)
-        printf("NUM<%s> ", token.lval.c_str());
-    else if (token_type == ERROR)
-        printf("ERROR at column %s", token.lval.c_str());
-    else
-        printf("%s ", token_strs[token_type - 257]);
-}
 struct yy_buffer_state {
     FILE * 	yy_input_file;
     char * 	yy_ch_buf;

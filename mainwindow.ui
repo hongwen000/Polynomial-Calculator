@@ -177,5 +177,37 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>lineEdit_main</sender>
+   <signal>returnPressed()</signal>
+   <receiver>pushButton_input</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>467</x>
+     <y>629</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>972</x>
+     <y>631</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lineEdit_x</sender>
+   <signal>returnPressed()</signal>
+   <receiver>pushButton_eval</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>243</x>
+     <y>665</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>972</x>
+     <y>661</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
 </ui>
