@@ -1,20 +1,19 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QStringListModel>
 #include <QDebug>
 #include <QListWidgetItem>
+#include <QMainWindow>
+#include <QStringListModel>
 namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget* parent = 0);
     QString get_main_input();
     ~MainWindow();
 
@@ -23,12 +22,11 @@ private slots:
 
     void on_actiontc_triggered();
 
-
     void on_pushButton_input_clicked();
 
     void on_pushButton_eval_clicked();
 
-    void on_listWidget_variables_itemDoubleClicked(QListWidgetItem *item);
+    void on_listWidget_variables_itemDoubleClicked(QListWidgetItem* item);
 
     void on_pushButton_delete_clicked();
 
@@ -39,7 +37,7 @@ private slots:
     void on_pushButton_draw_clicked();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
     QString input_main;
     QString input_x;
     bool toFile();

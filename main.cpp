@@ -1,12 +1,12 @@
+#include "calc_interface.h"
 #include "mainwindow.h"
+#include "polynomial.h"
+#include "token.h"
 #include <QApplication>
 #include <iostream>
 #include <string>
-#include "polynomial.h"
-#include "calc_interface.h"
-#include "token.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;

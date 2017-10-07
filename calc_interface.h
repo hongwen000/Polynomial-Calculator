@@ -1,8 +1,8 @@
 #ifndef CALC_INTERFACE_H
 #define CALC_INTERFACE_H
+#include "polynomial.h"
 #include <QPair>
 #include <QString>
-#include "polynomial.h"
 struct scanner_error_t {
     bool illegal_token;
     int illegal_token_pos;
@@ -28,7 +28,7 @@ struct assign_stm_t {
     Polynomial parsed_input;
     std::string variable_name;
 };
-struct test_equal_stm_t{
+struct test_equal_stm_t {
     Polynomial var1;
     Polynomial var2;
 };
@@ -36,11 +36,10 @@ struct print_stm_t {
     Polynomial var;
 };
 
-class calc_interface
-{
+class calc_interface {
 public:
     calc_interface();
-    static process_result_t process_input_main(const QString& main_input, const QString &input_x = QString());
+    static process_result_t process_input_main(const QString& main_input, const QString& input_x = QString());
     static void doParse(const QString& main_input);
     static QMap<QString, Polynomial> variable_table;
     static Polynomial getVariable(const std::string& name);

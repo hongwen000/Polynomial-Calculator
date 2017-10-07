@@ -1,11 +1,10 @@
 #ifndef H_TOKEN_H
 #define H_TOKEN_H value
-#include <string>
+#include "polynomial.h"
+#include <cstring>
 #include <stdio.h>
 #include <stdlib.h>
-#include <cstring>
-#include "polynomial.h"
-
+#include <string>
 
 #define YYSTYPE Polynomial
 #include "parser.h"
@@ -31,7 +30,6 @@ typedef enum {
 #else
 #define ERROR 256
 #endif
-
 
 static const char* token_strs[] = {
     "ID",
@@ -61,10 +59,9 @@ typedef struct
 extern YYSTYPE yylval;
 
 extern "C" {
-    extern int yylex(void);
-    extern int yyparse(void);
+extern int yylex(void);
+extern int yyparse(void);
 }
-
 
 void scan(std::string str);
 
