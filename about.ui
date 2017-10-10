@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>进行勾搭U•ェ•U</string>
+    <string>欢迎联系</string>
    </property>
   </widget>
   <widget class="QTextBrowser" name="textBrowser">

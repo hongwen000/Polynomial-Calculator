@@ -160,6 +160,8 @@ Polynomial Polynomial::operator*(const Polynomial& rhs) const
 
 Polynomial Polynomial::operator/(const Polynomial& rhs)
 {
+    if(rhs.isZero())
+        throw(std::overflow_error("Div zero"));
     Polynomial ret;
     Polynomial lhs = *this;
     while (lhs.biggest_exp >= rhs.biggest_exp && lhs != Polynomial(0, 0)) {
@@ -256,22 +258,22 @@ Polynomial::polynomial_type::const_iterator Polynomial::end() const
     return this->polynomial.cend();
 }
 
-void Polynomial::setID(std::string _ID)
+void Polynomial::setID(const QString& _ID)
 {
     m_ID = _ID;
 }
 
-std::string& Polynomial::getID()
+QString& Polynomial::getID()
 {
     return m_ID;
 }
 
-void Polynomial::setNum(std::string _NUM)
+void Polynomial::setNum(const QString& _NUM)
 {
     m_NUM = _NUM;
 }
 
-std::string& Polynomial::getNum()
+QString& Polynomial::getNum()
 {
     return m_NUM;
 }
@@ -288,14 +290,32 @@ QString Polynomial::toText()
 void Polynomial::loadText(QString& line)
 {
     polynomial.clear();
+    auto tokens = line.split(QRegExp("\\s+"),QString::SkipEmptyParts);
+    if(!(tokens.size() % 2 == 1)) {
+        throw(std::invalid_argument("synax error"));
+    }
     QTextStream l(&line, QIODevice::ReadOnly);
     QString name, coef, exp;
     l >> name;
-    this->setID(name.toStdString());
+    if(name == "all" || name =="print") {
+        throw(std::invalid_argument("synax error : used preversed keyword as variable name"));
+    }
+    QRegExp variable_name_pattern("[a-zA-Z_]+");
+    if(!variable_name_pattern.exactMatch(name)) {
+        throw(std::invalid_argument("illegal token" + name.toStdString()));
+    }
+    this->setID(name);
+    QRegExp number_pattern("-?([0-9]+)|(([0-9]+\\.[0-9]+)([eE][+-]?[0-9]+)?)");
     while (!l.atEnd()) {
         l >> coef >> exp;
         if (coef == "" && exp == "")
             continue;
+        if(!number_pattern.exactMatch(coef)) {
+            throw(std::invalid_argument("illegal token : " + coef.toStdString()));
+        }
+        if(!number_pattern.exactMatch(exp)) {
+            throw(std::invalid_argument("illegal token : " + exp.toStdString()));
+        }
         insertTerm(qMakePair(std::stod(coef.toStdString()), std::stod(exp.toStdString())));
     }
 }

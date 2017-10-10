@@ -34,10 +34,9 @@ void draw_figure_window::on_pushButton_clicked()
         QMessageBox::critical(this, "Error", "x的范围输入有误", QMessageBox::Ok);
         return;
     }
-    int x_chart_size = 400;
+    int x_chart_size = chartView->size().width() < 400 ? 400 : chartView->size().width();
     int pixel_per_x = 1;
     int x_sample_number = x_chart_size / pixel_per_x;
-    int y_chart_size = 300;
     Polynomial::value_type dx = (xmax - xmin) / x_sample_number;
     Polynomial::value_type x = xmin;
     try {

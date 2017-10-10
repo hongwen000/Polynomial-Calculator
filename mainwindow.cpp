@@ -53,6 +53,8 @@ void MainWindow::on_pushButton_input_clicked()
         ui->output_main->append("Number out of range");
     } catch (std::invalid_argument& e) {
         ui->output_main->append(e.what());
+    } catch (std::overflow_error& e) {
+        ui->output_main->append(e.what());
     }
 }
 
@@ -69,6 +71,8 @@ void MainWindow::on_pushButton_eval_clicked()
     } catch (std::out_of_range) {
         ui->output_main->append("Number out of range");
     } catch (std::invalid_argument& e) {
+        ui->output_main->append(e.what());
+    } catch (std::overflow_error& e) {
         ui->output_main->append(e.what());
     }
 }
@@ -143,9 +147,9 @@ bool MainWindow::loadFile()
             break;
         try {
             Polynomial p(line);
-            calc_interface::variable_table[QString::fromStdString(p.getID())] = p;
-            if (p.getID() != "" && ui->listWidget_variables->findItems(QString::fromStdString(p.getID()), Qt::MatchExactly).size() == 0)
-                ui->listWidget_variables->addItem(QString::fromStdString(p.getID()));
+            calc_interface::variable_table[p.getID()] = p;
+            if (p.getID() != "" && ui->listWidget_variables->findItems(p.getID(), Qt::MatchExactly).size() == 0)
+                ui->listWidget_variables->addItem(p.getID());
         } catch (...) {
             QMessageBox::critical(this, "Error", "Data file corrupted", QMessageBox::Ok);
         }

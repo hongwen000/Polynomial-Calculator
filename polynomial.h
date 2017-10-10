@@ -56,10 +56,10 @@ public:
     polynomial_type::iterator end(); //OK
     polynomial_type::const_iterator begin() const; //OK
     polynomial_type::const_iterator end() const; //OK
-    void setID(std::string);
-    std::string& getID();
-    void setNum(std::string);
-    std::string& getNum();
+    void setID(const QString&);
+    QString& getID();
+    void setNum(const QString&);
+    QString &getNum();
     QString toText();
     void loadText(QString& line);
 
@@ -67,8 +67,8 @@ private:
     polynomial_type polynomial;
     template <typename F>
     Polynomial operator_undetermine(const Polynomial& rhs, F _operator) const;
-    std::string m_ID;
-    std::string m_NUM;
+    QString m_ID;
+    QString m_NUM;
 };
 
 QDebug operator<<(QDebug out, const Polynomial& operand);

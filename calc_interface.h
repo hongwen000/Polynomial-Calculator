@@ -10,7 +10,7 @@ struct scanner_error_t {
 
 struct parser_error_t {
     bool undefined_reference;
-    std::string var_name;
+    QString var_name;
     bool synax_error;
 };
 struct process_result_t {
@@ -22,11 +22,12 @@ struct process_result_t {
 enum statement_type_t {
     ASSIGN_STM,
     TEST_EQUAL_STM,
-    PRINT_STM
+    PRINT_STM,
+    EVAL_STM
 };
 struct assign_stm_t {
     Polynomial parsed_input;
-    std::string variable_name;
+    QString variable_name;
 };
 struct test_equal_stm_t {
     Polynomial var1;
@@ -35,18 +36,23 @@ struct test_equal_stm_t {
 struct print_stm_t {
     Polynomial var;
 };
+struct eval_stm_t {
+    Polynomial::value_type x_var;
+    Polynomial parsed_input;
+};
 
 class calc_interface {
 public:
     calc_interface();
-    static process_result_t process_input_main(const QString& main_input, const QString& input_x = QString());
-    static void doParse(const QString& main_input);
+    static process_result_t process_input_main(QString main_input, QString input_x = QString());
+    static void doParse(QString main_input);
     static QMap<QString, Polynomial> variable_table;
-    static Polynomial getVariable(const std::string& name);
+    static Polynomial getVariable(const QString &name);
 
     static assign_stm_t assign_stm_info;
     static test_equal_stm_t test_equal_stm_info;
     static print_stm_t print_stm_info;
+    static eval_stm_t eval_stm_info;
 
     static scanner_error_t scanner_error;
     static parser_error_t parser_error;
