@@ -45,7 +45,6 @@ FORMS += \
 
 
 !macx {
-LIBS += -lfl -ly
 DISTFILES += \
     calc.ico
     RC_ICONS = calc.ico
