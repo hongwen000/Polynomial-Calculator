@@ -80,7 +80,7 @@ void MainWindow::on_pushButton_eval_clicked()
 void MainWindow::on_listWidget_variables_itemDoubleClicked(QListWidgetItem* item)
 {
     Polynomial& p = calc_interface::variable_table[item->text()];
-    ui->lineEdit_main->setText(p.printPretty());
+    ui->output_main->append(p.printPretty());
 }
 
 void MainWindow::on_pushButton_delete_clicked()

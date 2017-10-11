@@ -1,5 +1,4 @@
 #include "polynomial.h"
-
 Polynomial::Polynomial()
 {
 }
@@ -144,17 +143,74 @@ Polynomial Polynomial::operator*(const Polynomial::term_type& term) const
     }
     return ret;
 }
+//
+//Polynomial Polynomial::operator*(const Polynomial& rhs) const
+//{
+//    Polynomial ret;
+//    if (this->isZero() || rhs.isZero())
+//        return ret;
+//    for (auto term : rhs) {
+//        auto tmp = *this * term;
+//        ret += tmp;
+//    }
+//    qDebug() << "result is : " << ret.printPretty();
+//    return ret;
+//}
 
-Polynomial Polynomial::operator*(const Polynomial& rhs) const
+//由于我编程所用的的编译环境 Apple LLVM version 9.0.0 (clang-900.0.37) on MacOS 10.12
+//对long double 支持不好，所以只能直接使用int, double
+std::map<int, std::complex<double> > Polynomial::fft_eval_y(std::vector<std::complex<double> > A, int n, int sign) const
 {
-    Polynomial ret;
-    if (this->isZero() || rhs.isZero())
-        return ret;
-    for (auto term : rhs) {
-        auto tmp = *this * term;
-        ret += tmp;
+    std::map<int, std::complex<double> >Y;
+    if(n == 1) {
+        Y[0] = A[0];
     }
-    qDebug() << "result is : " << ret.printPretty();
+    else {
+        std::vector<std::complex<double> >A_0;
+        std::vector<std::complex<double> >A_1;
+        for(int k = 0; k < n; k += 2) {
+            A_0.push_back(A[k]);
+            A_1.push_back(A[k + 1]);
+        }
+        std::map<int, std::complex<double> > u = fft_eval_y(A_0, n / 2, sign);
+        std::map<int, std::complex<double> > v = fft_eval_y(A_1, n / 2, sign);
+        std::complex<double> w_k(1, 0);
+        std::complex<double> wn(std::cos(2 * M_PI / n), sign * std::sin(2 * M_PI / n));
+        for(int k = 0; k < n / 2; ++k) {
+            Y[k] = u[k] + w_k * v[k];
+            Y[k + n / 2] = u[k] - w_k * v[k];
+            w_k = w_k * wn;
+        }
+    }
+    return Y;
+}
+
+Polynomial Polynomial::operator *(const Polynomial& rhs) const{
+    int base_exp = qMin(this->smallest_exp, rhs.smallest_exp);
+    int exp_this = this->biggest_exp - base_exp;
+    int exp_rhs  = rhs.biggest_exp - base_exp;
+    int n = 1;
+    while(n <= exp_rhs + exp_this)
+        n *= 2;
+    std::vector<std::complex<double> > A_B, A_C;
+    for(int k = 0; k < n; ++k) {
+        A_B.push_back(this->get(k));
+        A_C.push_back(rhs.get(k));
+    }
+    std::map<int, std::complex<double> > Y_B = fft_eval_y(A_B, n, 1);
+    std::map<int, std::complex<double> > Y_C = fft_eval_y(A_C, n, 1);
+    std::vector<std::complex<double> > Y;
+    for(int k = 0; k < n; ++k) {
+        Y.push_back(Y_B[k] * Y_C[k]);
+    }
+    std::map<int, std::complex<double> > A = fft_eval_y(Y, n, -1);
+    Polynomial ret;
+    for(int i = 0; i < n; ++i) {
+        double a_i = A[i].real() / n;
+        if(std::abs(a_i - std::round(a_i)) < 1.0e-15)
+            a_i = std::round(a_i);
+        ret.insertTerm(a_i, base_exp + i);
+    }
     return ret;
 }
 
@@ -287,7 +343,7 @@ QString Polynomial::toText()
     return ret;
 }
 
-void Polynomial::loadText(QString& line)
+void Polynomial::loadText(QString line)
 {
     polynomial.clear();
     auto tokens = line.split(QRegExp("\\s+"),QString::SkipEmptyParts);
@@ -319,6 +375,9 @@ void Polynomial::loadText(QString& line)
         insertTerm(qMakePair(std::stod(coef.toStdString()), std::stod(exp.toStdString())));
     }
 }
+
+
+
 
 Polynomial::polynomial_type::iterator Polynomial::begin()
 {

@@ -7,7 +7,10 @@
 #include <functional>
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 #include <string>
+#include <complex>
+#include <QVector>
 
 class Polynomial {
 public:
@@ -61,12 +64,14 @@ public:
     void setNum(const QString&);
     QString &getNum();
     QString toText();
-    void loadText(QString& line);
+    void loadText(QString line);
 
 private:
     polynomial_type polynomial;
     template <typename F>
     Polynomial operator_undetermine(const Polynomial& rhs, F _operator) const;
+    //由于我编程所用的的编译环境 Apple LLVM version 9.0.0 (clang-900.0.37) on MacOS 10.12对long double 支持不好，所以只能直接使用int, double
+    std::map<int, std::complex<double> > fft_eval_y(std::vector<std::complex<double> > A, int n, int sign) const;
     QString m_ID;
     QString m_NUM;
 };
